@@ -1,8 +1,10 @@
 const { MongoClient } = require('mongodb');
 
-const uri = 'mongodb://127.0.0.1:27017/?retryWrites=true&writeConcern=majority';
+if (!process.env.DB_URI) {
+	throw new Error('No DB_URI');
+}
 
-const client = new MongoClient(uri);
+const client = new MongoClient(process.env.DB_URI);
 
 let db = null;
 
@@ -15,14 +17,21 @@ async function connect() {
 		throw new Error('No DB_NAME');
 	}
 
-	return db = client.db(process.env.DB_NAME);
+	db = client.db(process.env.DB_NAME);
+
+	return db;
 }
 
 async function close() {
 	await client.close();
 }
 
+function getConnection() {
+	return db;
+}
+
 module.exports = {
+	getConnection,
 	connect,
 	close,
 }

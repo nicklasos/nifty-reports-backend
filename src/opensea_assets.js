@@ -1,0 +1,42 @@
+const {getConnection} = require('./mongo');
+
+async function createNewBatch(collectionSlug) {
+	const batch = {
+		id: 1,
+		is_done: false,
+		collection_slug: collectionSlug,
+		created_at: new Date(),
+	};
+
+	const collection = getConnection().collection('opensea_assets_batch');
+
+	const lastBatch = await collection.findOne(
+		{collection_slug: collectionSlug},
+		{sort: {id: -1}},
+	)
+
+	if (lastBatch) {
+		batch.id = lastBatch.id + 1;
+	}
+
+	await collection.insertOne(batch);
+
+	return batch;
+}
+
+async function markBatchAsDone(collectionSlug, id) {
+	await getConnection().collection('opensea_assets_batch').update(
+		{
+			collection_slug: collectionSlug,
+			id,
+		},
+		{
+			is_done: true,
+		},
+	);
+}
+
+module.exports = {
+	createNewBatch,
+	markBatchAsDone,
+};

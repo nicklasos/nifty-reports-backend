@@ -1,0 +1,30 @@
+{
+  "name": "nifty-reports-backend",
+  "version": "1.0.0",
+  "description": "Backend for nifty reports",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nicklasos/nifty-reports-backend.git"
+  },
+  "keywords": [
+    "nodejs",
+    "nft",
+    "blockchain",
+    "eth"
+  ],
+  "author": "Nicklasos",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nicklasos/nifty-reports-backend/issues"
+  },
+  "homepage": "https://github.com/nicklasos/nifty-reports-backend#readme",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "dotenv": "^16.0.0",
+    "mongodb": "^4.5.0"
+  }
+}

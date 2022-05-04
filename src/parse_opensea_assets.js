@@ -3,7 +3,7 @@ require('dotenv').config({path: path.resolve(__dirname, "..", ".env")});
 
 const {connect, close} = require('./mongo');
 const {createNewBatch, markBatchAsDone} = require('./opensea_assets');
-const axios = require('axios');
+const {getAssets} = require("./opensea_api");
 
 const collectionSlug = 'everai-heroes-duo';
 
@@ -17,20 +17,11 @@ async function run() {
 
 		do {
 
-			let url = `https://api.opensea.io/api/v1/assets?collection_slug=${collectionSlug}&limit=50`;
-			if (cursor) {
-				url = `${url}&cursor=${cursor}`;
-			}
+			let data = getAssets(collectionSlug, cursor);
 
-			const res = await axios.get(url, {
-				headers: {
-					'X-API-KEY': process.env.OPENSEA_API_KEY,
-				}
-			});
+			cursor = data.next;
 
-			cursor = res.data.next;
-
-			let assets = res.data.assets.map(asset => ({
+			let assets = data.assets.map(asset => ({
 				batch: batch.id,
 				collection_slug: collectionSlug,
 				id: asset.id,

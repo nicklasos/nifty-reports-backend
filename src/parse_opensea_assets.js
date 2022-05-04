@@ -17,7 +17,7 @@ async function run() {
 
 		do {
 
-			let data = getAssets(collectionSlug, cursor);
+			let data = await getAssets(collectionSlug, cursor);
 
 			cursor = data.next;
 

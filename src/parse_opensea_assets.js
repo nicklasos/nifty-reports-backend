@@ -2,7 +2,7 @@ const path = require('path');
 require('dotenv').config({path: path.resolve(__dirname, "..", ".env")});
 
 const {connect, close} = require('./mongo');
-const {createNewBatch, markBatchAsDone} = require('./opensea_assets');
+const {createNewBatch, markBatchAsDone} = require('./opensea_service');
 const {getAssets} = require("./opensea_api");
 
 const collectionSlug = 'everai-heroes-duo';

@@ -36,7 +36,16 @@ async function markBatchAsDone(collectionSlug, id) {
 	);
 }
 
+async function saveCollectionStats(collectionSlug, stats) {
+	await getConnection().collection('opensea_collection_stats').insertOne({
+		collectionSlug,
+		...stats,
+		created_at: new Date(),
+	})
+}
+
 module.exports = {
 	createNewBatch,
 	markBatchAsDone,
+	saveCollectionStats,
 };

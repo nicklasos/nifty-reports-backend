@@ -1,4 +1,4 @@
-const axios = require('axios');
+// const axios = require('axios');
 
 const RAW_DATA = [{
   "_id": {
@@ -1292,7 +1292,7 @@ RAW_DATA.forEach(nft => {
 // const findBluechips = async () => {
  
 //   const address = ``;
-//   const moralisApiUrl = `https://deep-index.moralis.io/api/v2/${add}/nft?chain=eth&format=decimal`;
+//   const moralisApiUrl = `https://deep-index.moralis.io/api/v2/${address}/nft?chain=eth&format=decimal`;
 
 //   const data = Promise.all(
 //     [1,2,3].map(async (i) => await (await axios.get(moralisApiUrl, {
@@ -1318,7 +1318,7 @@ const uniqueHolders_PCT = (uniqueHolders * 100 / COLLECTION_SIZE).toFixed(2);
 
 // console.log(uniqueHolders);
 
-// 3. GET top2 and top5 holder amounts
+// 3. GET top10, 50, 100 holder amounts
 const TOP_10 = 10;
 const TOP_50 = 50;
 const TOP_100 = 50;
@@ -1327,8 +1327,9 @@ const TOP10_holder = [...sortedMap.values()].slice(TOP_10 - 1, TOP_10)[0]?.amoun
 const TOP50_holder = [...sortedMap.values()].slice(TOP_50 - 1, TOP_50)[0]?.amount;
 const TOP100_holder = [...sortedMap.values()].slice(TOP_100 - 1, TOP_100)[0]?.amount;
 
-// console.log(`Top 2 holder:`,TOP2_holder);
-// console.log(`Top 5 holder:`,TOP5_holder);
+// console.log(`Top 10 holder:`,TOP10_holder);
+// console.log(`Top 50 holder:`,TOP50_holder);
+// console.log(`Top 100 holder:`,TOP100_holder);
 
 // 4a. CALCULATE amount of wallets with 1, 2-3, 4+ NFTS
 const SINGLE = 1;
@@ -1369,7 +1370,7 @@ const WEEK = 7;
 const MONTH = 30;
 
 const WEEK_HOLDERS = [...extendedMap.values()].filter(wallet => wallet.daysHolding <= WEEK).length;
-const UNDER_MONTH_HOLDERS = [...extendedMap.values()].filter(wallet => wallet.daysHolding > WEEK && wallet.daysHolding < MONTH).length;
+const UNDER_MONTH_HOLDERS = [...extendedMap.values()].filter(wallet => wallet.daysHolding > WEEK && wallet.daysHolding <= MONTH).length;
 const OVER_MONTH_HOLDERS = [...extendedMap.values()].filter(wallet => wallet.daysHolding > MONTH).length;
 
 // CALCULATE % of wallets holding for 1-7D, 7-30D, 30D+
@@ -1401,7 +1402,7 @@ const finalStats = {
         number: SINGLE_HOLDERS,
         pct: SINGLE_HOLDERS_PCT
       },
-      tiple: {
+      triple: {
         number: TRIPLE_HOLDERS,
         pct: TRIPLE_HOLDERS_PCT
       },

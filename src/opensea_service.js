@@ -25,7 +25,7 @@ async function createNewBatch(collectionSlug) {
 }
 
 async function markBatchAsDone(collectionSlug, id) {
-	await getConnection().collection('opensea_assets_batch').update(
+	await getConnection().collection('opensea_assets_batch').updateMany(
 		{
 			collection_slug: collectionSlug,
 			id,

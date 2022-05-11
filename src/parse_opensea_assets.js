@@ -42,6 +42,7 @@ async function run() {
 				transfer_fee_payment_token: asset.transfer_fee_payment_token,
 				transfer_fee: asset.transfer_fee,
 				token_id: asset.token_id,
+				asset_contract: asset.asset_contract,
 			}));
 
 			await openseaAssets.insertMany(assets);

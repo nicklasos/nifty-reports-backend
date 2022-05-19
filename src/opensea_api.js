@@ -10,9 +10,9 @@ const request = axios.create({
 async function getCollectionStats(collectionSlug) {
 	const url = `/collection/${collectionSlug}/stats`
 
-	const res = await request.get(url);
+	const { data } = await request.get(url);
 
-	return res.data;
+	return data;
 }
 
 async function getAssets(collectionSlug, cursor) {
@@ -21,12 +21,22 @@ async function getAssets(collectionSlug, cursor) {
 		url = `${url}&cursor=${cursor}`;
 	}
 
-	const res = await request.get(url);
+	const { data } = await request.get(url);
 
-	return res.data;
+	return data;
+}
+
+async function getContractStats(contractAddress) {
+	const url = `/asset_contract/${contractAddress}`;
+
+	// grab "image_url" and "created_date"
+	const { data } = await request.get(url);
+
+	return data;
 }
 
 module.exports = {
 	getAssets,
 	getCollectionStats,
+	getContractStats
 }

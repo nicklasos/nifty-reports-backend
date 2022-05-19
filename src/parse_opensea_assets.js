@@ -5,9 +5,13 @@ const {connect, close} = require('./mongo');
 const {createNewBatch, markBatchAsDone} = require('./opensea_service');
 const {getAssets} = require("./opensea_api");
 
-const collectionSlug = 'everai-heroes-duo';
+const COLLECTION = {
+	collectionSlug: 'everai-heroes-duo',
+	contractAddress: '0x9a38DEC0590aBC8c883d72E52391090e948DdF12'
+}
 
 async function run() {
+	const { collectionSlug } = COLLECTION;
 	try {
 		const db = await connect();
 		const openseaAssets = db.collection('opensea_assets');

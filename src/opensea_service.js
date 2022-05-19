@@ -8,7 +8,7 @@ async function createNewBatch(collectionSlug) {
 		created_at: new Date(),
 	};
 
-	const collection = getConnection().collection('opensea_assets_batch');
+	const collection = getConnection().collection('Opensea_assets_batch');
 
 	const lastBatch = await collection.findOne(
 		{collection_slug: collectionSlug},
@@ -25,7 +25,7 @@ async function createNewBatch(collectionSlug) {
 }
 
 async function markBatchAsDone(collectionSlug, id) {
-	await getConnection().collection('opensea_assets_batch').updateMany(
+	await getConnection().collection('Opensea_assets_batch').updateMany(
 		{
 			collection_slug: collectionSlug,
 			id,
@@ -38,7 +38,7 @@ async function markBatchAsDone(collectionSlug, id) {
 
 async function saveCollectionStats(collectionSlug, stats) {
 	await getConnection().collection('opensea_collection_stats').insertOne({
-		collectionSlug,
+		collection_slug: collectionSlug,
 		...stats,
 		created_at: new Date(),
 	})

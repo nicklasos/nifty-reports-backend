@@ -8,10 +8,15 @@ async function run() {
 
 		// await calculateAndSaveStats('everai-heroes-duo', 1);
 
-		await getConnection().collection('collection').insertOne({
-			collection_slug: 'everai-heroes-duo',
-			id: 1,
-		})
+		// await getConnection().collection('user').insertOne({
+		// 	email: 'nicklasos+1@gmail.com',
+		// 	name: 'Nicklasos+1',
+		// })
+		//
+		// await getConnection().collection('users').insertOne({
+		// 	email: 'nicklasos+2@gmail.com',
+		// 	name: 'Nicklasos+2',
+		// })
 
 	} finally {
 		await close();

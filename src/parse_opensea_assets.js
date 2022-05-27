@@ -7,7 +7,8 @@ const {getAssets} = require("./opensea_api");
 
 const COLLECTION = {
 	collectionSlug: 'everai-heroes-duo',
-	contractAddress: '0x9a38DEC0590aBC8c883d72E52391090e948DdF12'
+	contractAddress: '0x9a38DEC0590aBC8c883d72E52391090e948DdF12',
+	twitterHandle: 'TheEverai'
 }
 
 async function run() {

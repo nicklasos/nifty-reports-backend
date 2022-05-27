@@ -11,7 +11,7 @@ type Collection = {
   contractCreatedData: Date; // 2022-03-05
   owners: number; // 3000
   pfps: number; // 400
-  twitter: number; // 82.2
+  twitterFollowers: number; // 82.2
   discord: number; // 24.2
   price: {
     floor: string; // 0.345

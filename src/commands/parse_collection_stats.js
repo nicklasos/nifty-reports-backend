@@ -1,10 +1,10 @@
 const path = require('path');
-require('dotenv').config({path: path.resolve(__dirname, "..", ".env")});
+require('dotenv').config({path: path.resolve(__dirname, "..", "..", ".env")});
 
-const {connect, close} = require('./mongo');
-const {getCollectionStats, getContractStats} = require('./opensea_api');
-const {saveCollectionStats} = require('./opensea_service');
-const {getTwitterFollowers} = require("./twitter_api");
+const {connect, close} = require("./../mongo");
+const {getCollectionStats, getContractStats} = require("./../opensea_api");
+const {saveCollectionStats} = require("./../opensea_db");
+const {getTwitterFollowers} = require("./../twitter_api");
 
 const COLLECTION = {
 	collectionSlug: 'everai-heroes-duo',
@@ -27,7 +27,6 @@ async function run() {
 			contractCreationDate: contract.created_date,
 			twitterFollowers,
 		}
-
 
 		await saveCollectionStats(collectionSlug, stats);
 

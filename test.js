@@ -1,12 +1,16 @@
-require('dotenv').config();
-const {connect, close, getConnection} = require('./src/mongo');
+require("dotenv").config();
+const {connect, close} = require("./src/mongo");
 const {calculateAndSaveStats} = require("./src/opensea_stats");
+const {calculateBlueChip} = require("./src/blue_chip");
 
 async function run() {
 	try {
 		await connect();
 
-		// await calculateAndSaveStats('everai-heroes-duo', 1);
+		// const result = await calculateBlueChip();
+
+		await calculateAndSaveStats('everai-heroes-duo', 1);
+
 
 		// await getConnection().collection('user').insertOne({
 		// 	email: 'nicklasos+1@gmail.com',

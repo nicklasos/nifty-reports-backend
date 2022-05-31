@@ -1,9 +1,9 @@
 const path = require('path');
-require('dotenv').config({path: path.resolve(__dirname, "..", ".env")});
+require('dotenv').config({path: path.resolve(__dirname, "..", "..", ".env")});
 
-const {connect, close} = require('./mongo');
-const {createNewBatch, markBatchAsDone} = require('./opensea_service');
-const {getAssets} = require("./opensea_api");
+const {connect, close} = require('./../mongo');
+const {createNewBatch, markBatchAsDone} = require('./../opensea_db');
+const {getAssets} = require('./../opensea_api');
 
 const COLLECTION = {
 	collectionSlug: 'everai-heroes-duo',
@@ -12,7 +12,7 @@ const COLLECTION = {
 }
 
 async function run() {
-	const { collectionSlug } = COLLECTION;
+	const {collectionSlug} = COLLECTION;
 	try {
 		const db = await connect();
 		const openseaAssets = db.collection('opensea_assets');
@@ -48,6 +48,8 @@ async function run() {
 				transfer_fee: asset.transfer_fee,
 				token_id: asset.token_id,
 				asset_contract: asset.asset_contract,
+				collection_created_date:
+					asset.collection.created_date.substring(0, asset.collection.created_date.indexOf('.')),
 			}));
 
 			await openseaAssets.insertMany(assets);

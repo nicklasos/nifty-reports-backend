@@ -23,6 +23,11 @@ type Collection = {
     weekly: number; // 342
     monthly: number; // 14092
   };
+  volume: {
+    daily: number;
+    weekly: number;
+    monthly: number;
+  };
   uniqueHolders: {
     number: number; // 3000
     ratio: number; // 40 (%)

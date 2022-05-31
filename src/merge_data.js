@@ -14,7 +14,17 @@ async function mergeData(collectionSlug) {
 	// console.log(optickCommunitySize);
 	// console.log(openseaCalculatedStats);
 
+	const data = {
+		...openseaCalculatedStats,
+		...openseaStats,
+		...icyTools,
+		...optickCommunitySize,
+	}
 
+	delete data['_id'];
+	delete data['batch_id'];
+
+	await getConnection().collection('collection_stats').insertOne(data);
 }
 
 module.exports = {

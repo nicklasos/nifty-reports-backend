@@ -1,8 +1,11 @@
 const axios = require('axios');
 const {getConnection} = require("./mongo");
+const {changeObjectKey} = require("./helpers");
 
 async function parseIcyToolsCollectionStats(collectionSlug, contractAddress) {
 	const stats = await getIcyToolsCollectionStats(contractAddress);
+
+	changeObjectKey(stats, 'totalSales', 'total_sales');
 
 	await getConnection().collection('icy_tools_stats').insertOne({
 		collection_slug: collectionSlug,

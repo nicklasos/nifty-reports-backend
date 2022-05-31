@@ -171,16 +171,16 @@ async function calculateStats(data) {
 // console.log(`Holders for 30D+ ${overMonthHoldersRatio}%`);
 
 	const finalStats = {
-		uniqueHolders: {
+		unique_holders: {
 			number: uniqueHolders,
 			ratio: uniqueHolders_PCT
 		},
-		topHolders: {
+		top_holders: {
 			top10: top10Holder,
 			top50: top50Holder,
 			top100: top100Holder
 		},
-		holdAmount: {
+		hold_amount: {
 			single: {
 				number: singleNftHolders,
 				ratio: singleNftHolderRatio
@@ -194,16 +194,16 @@ async function calculateStats(data) {
 				ratio: quadNftHoldersRatio
 			}
 		},
-		holdTime: {
+		hold_time: {
 			week: {
 				number: weekHolders,
 				ratio: weekHoldersRatio
 			},
-			underMonth: {
+			under_month: {
 				number: underMonthHolders,
 				ratio: underMonthHoldersRatio,
 			},
-			overMonth: {
+			over_month: {
 				number: overMonthHolders,
 				ratio: overMonthHoldersRatio
 			}

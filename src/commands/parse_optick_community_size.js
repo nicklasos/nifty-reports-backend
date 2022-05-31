@@ -1,26 +1,17 @@
 const path = require('path');
-require('dotenv').config({path: path.resolve(__dirname, "..", ".env")});
+require('dotenv').config({path: path.resolve(__dirname, "..", "..", ".env")});
 
-const {connect, close} = require('./mongo');
-const axios = require("axios");
+const {connect, close} = require("./../mongo");
+const {parseOptickCommunitySize} = require("../optick");
 
-const id = '0x9a38dec0590abc8c883d72e52391090e948ddf12';
+const id = '0x9a38DEC0590aBC8c883d72E52391090e948DdF12';
 const collectionSlug = 'everai-heroes-duo';
 
 async function run() {
 	try {
-		const db = await connect();
-		const optickCommunitySize = db.collection('optick_community_size');
+		await connect();
 
-		const url = `https://inspect-app.optick.xyz/collections/details?id=${id}&limit=100000&user_id=web-app`;
-
-		const res = await axios.get(url);
-
-		await optickCommunitySize.insertOne({
-			collection_slug: collectionSlug,
-			community_size: res.data.stats.community_size,
-			created_at: new Date(),
-		});
+		await parseOptickCommunitySize(collectionSlug, id);
 
 	} finally {
 		await close();

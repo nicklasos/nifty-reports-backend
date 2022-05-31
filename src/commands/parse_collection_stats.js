@@ -14,6 +14,7 @@ const COLLECTION = {
 
 async function run() {
 	const { collectionSlug, contractAddress, twitterHandle } = COLLECTION;
+
 	try {
 		await connect();
 
@@ -23,9 +24,9 @@ async function run() {
 
 		const stats = {
 			...collection.stats,
-			imageUrl: contract.image_url,
-			contractCreationDate: contract.created_date,
-			twitterFollowers,
+			image_url: contract.image_url,
+			contract_creation_date: contract.created_date,
+			twitter_followers: twitterFollowers,
 		}
 
 		await saveCollectionStats(collectionSlug, stats);

@@ -10,10 +10,7 @@ async function createNewBatch(collectionSlug) {
 
 	const collection = getConnection().collection('opensea_assets_batch');
 
-	const lastBatch = await collection.findOne(
-		{collection_slug: collectionSlug},
-		{sort: {id: -1}},
-	)
+	const lastBatch = await getLastBatchId(collectionSlug);
 
 	if (lastBatch) {
 		batch.id = lastBatch.id + 1;
@@ -33,6 +30,33 @@ async function markBatchAsDone(collectionSlug, id) {
 		{
 			$set: {is_done: true},
 		},
+	);
+}
+
+async function getLastBatchId(collectionSlug) {
+	const lastBatch = await getConnection().collection('opensea_assets_batch').findOne(
+		{collection_slug: collectionSlug},
+		{sort: {id: -1}},
+	);
+
+	if (lastBatch) {
+		return lastBatch.batch_id;
+	}
+
+	return null;
+}
+
+async function getLastOpenseaCalculatedStats(collectionSlug) {
+	return await getConnection().collection('opensea_calculated_stats').findOne(
+		{collection_slug: collectionSlug},
+		{sort: {id: -1}},
+	);
+}
+
+async function getLastOpenseaCollectionStats(collectionSlug) {
+	return await getConnection().collection('opensea_collection_stats').findOne(
+		{collection_slug: collectionSlug},
+		{sort: {id: -1}},
 	);
 }
 
@@ -71,5 +95,8 @@ module.exports = {
 	markBatchAsDone,
 	saveCollectionStats,
 	getAssetsByBatchId,
+	getLastOpenseaCollectionStats,
+	getLastOpenseaCalculatedStats,
+	getLastBatchId,
 	saveCalculatedStats,
 };

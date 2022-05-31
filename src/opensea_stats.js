@@ -1,6 +1,12 @@
 const {getConnection} = require("./mongo");
 const axios = require("axios");
-const {saveCalculatedStats} = require("./opensea_db");
+const {saveCalculatedStats, getLastBatchId, createNewBatch, markBatchAsDone} = require("./opensea_db");
+const {getAssets} = require("./opensea_api");
+
+async function calculateAndSaveStatsFromLastBatch(collectionSlug) {
+	const batchId = await getLastBatchId(collectionSlug);
+	await calculateAndSaveStats(collectionSlug, batchId);
+}
 
 async function calculateAndSaveStats(collectionSlug, batchId) {
 	const assets = await getConnection().collection('opensea_assets').find({
@@ -24,20 +30,20 @@ async function calculateStats(data) {
 	const reducedData = new Map();
 
 	data.forEach(nft => {
-		const { owner: { address }, last_sale, token_id, collection_created_date } = nft;
+		const {owner: {address}, last_sale, token_id, collection_created_date} = nft;
 
 		// Check if sale event exist otherwise set mint date as event timestamp
 		// TODO: use contractCreationDate from `getContractStats`
 		const saleEvent = last_sale?.event_timestamp ?? collection_created_date;
 
 		if (reducedData.has(address)) {
-			const { amount, holdingSince } = reducedData.get(address);
+			const {amount, holdingSince} = reducedData.get(address);
 
 			const newHoldingSince = holdingSince > saleEvent ? saleEvent : holdingSince;
 
-			reducedData.set(address, { amount: amount + 1, holdingSince: newHoldingSince });
+			reducedData.set(address, {amount: amount + 1, holdingSince: newHoldingSince});
 		} else {
-			reducedData.set(address, { amount: 1, holdingSince: saleEvent, tokenId: token_id });
+			reducedData.set(address, {amount: 1, holdingSince: saleEvent, tokenId: token_id});
 		}
 	});
 
@@ -63,7 +69,7 @@ async function calculateStats(data) {
 
 				const moralisApiUrl = `https://deep-index.moralis.io/api/v2/${address}/nft?chain=eth&format=decimal`;
 
-				const { data } = await axios.get(moralisApiUrl, {
+				const {data} = await axios.get(moralisApiUrl, {
 					headers: {
 						'Content-Type': 'application/json',
 						'X-API-Key': MORALIS_API_KEY,
@@ -77,7 +83,7 @@ async function calculateStats(data) {
 				return matches.length >= 1;
 			}))
 
-		return values.reduce((prev,curr) => prev + curr, 0);
+		return values.reduce((prev, curr) => prev + curr, 0);
 	};
 
 	// const res = await calculateBlueChipHolders();//.then((res) => console.log(res)).catch(console.error);
@@ -93,7 +99,7 @@ async function calculateStats(data) {
 // CALCULATE HOW LONG HAVE EACH BEEN LONGEST HOLDING FOR (DAYS);
 	const extendedMap = new Map([...sortedMap.entries()].map(([key, value]) => {
 		const now = new Date();
-		const { holdingSince } = value;
+		const {holdingSince} = value;
 
 		const timeDiff = now.getTime() - new Date(holdingSince).getTime();
 
@@ -140,8 +146,6 @@ async function calculateStats(data) {
 // console.log(`Holders w/ ${singleNftHolders} NFT are ${singleNftHolderRatio}%`);
 // console.log(`Holders w/ ${tripleNftHolders} NFT are ${tripleNftHoldersRatio}%`);
 // console.log(`Holders w/ ${quadNftHolders} NFT are ${quadNftHoldersRatio}%`);
-
-
 
 
 // 5b. CALCULATE How long people hodl
@@ -213,7 +217,57 @@ async function calculateStats(data) {
 	return finalStats;
 }
 
+async function parseOpenseaAssets(collectionSlug) {
+	const openseaAssets = await getConnection().collection('opensea_assets');
+
+	let cursor = null;
+	let batch = await createNewBatch(collectionSlug);
+
+	do {
+
+		let data = await getAssets(collectionSlug, cursor);
+
+		cursor = data.next;
+
+		let assets = data.assets.map(asset => ({
+			batch: batch.id,
+			collection_slug: collectionSlug,
+			id: asset.id,
+			num_sales: asset.num_sales,
+			image_url: asset.image_url,
+			name: asset.name,
+			description: asset.description,
+			external_link: asset.external_link,
+			permalink: asset.permalink,
+			decimals: asset.decimals,
+			token_metadata: asset.token_metadata,
+			owner: asset.owner,
+			sell_orders: asset.sell_orders,
+			last_sale: asset.last_sale,
+			top_bid: asset.top_bid,
+			listing_date: asset.listing_date,
+			is_presale: asset.is_presale,
+			transfer_fee_payment_token: asset.transfer_fee_payment_token,
+			transfer_fee: asset.transfer_fee,
+			token_id: asset.token_id,
+			asset_contract: asset.asset_contract,
+			collection_created_date:
+				asset.collection.created_date.substring(0, asset.collection.created_date.indexOf('.')),
+		}));
+
+		await openseaAssets.insertMany(assets);
+
+		process.stdout.write('.');
+
+	} while (cursor);
+
+	await markBatchAsDone(collectionSlug, batch.id);
+	await calculateAndSaveStats(collectionSlug, batch.id);
+}
+
 module.exports = {
+	calculateAndSaveStatsFromLastBatch,
 	calculateAndSaveStats,
 	calculateStats,
+	parseOpenseaAssets,
 };

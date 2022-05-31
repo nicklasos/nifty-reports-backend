@@ -1,7 +1,10 @@
 require("dotenv").config();
 const {connect, close} = require("./src/mongo");
-const {calculateAndSaveStats} = require("./src/opensea_stats");
+const {calculateAndSaveStats, calculateAndSaveStatsFromLastBatch} = require("./src/opensea_stats");
 const {calculateBlueChip} = require("./src/blue_chip");
+const {mergeData} = require("./src/merge_data");
+
+const collectionSlug = 'everai-heroes-duo';
 
 async function run() {
 	try {
@@ -9,7 +12,9 @@ async function run() {
 
 		// const result = await calculateBlueChip();
 
-		await calculateAndSaveStats('everai-heroes-duo', 1);
+		// await calculateAndSaveStatsFromLastBatch('everai-heroes-duo');
+
+		await mergeData(collectionSlug);
 
 
 		// await getConnection().collection('user').insertOne({

@@ -1,12 +1,24 @@
 const axios = require('axios');
+const {getConnection} = require("./mongo");
 
-const COLLECTION = {
-	collectionSlug: 'everai-heroes-duo',
-	contractAddress: '0x9a38DEC0590aBC8c883d72E52391090e948DdF12',
-	twitterHandle: 'TheEverai'
+async function parseIcyToolsCollectionStats(collectionSlug, contractAddress) {
+	const stats = await getIcyToolsCollectionStats(contractAddress);
+
+	await getConnection().collection('icy_tools_stats').insertOne({
+		collection_slug: collectionSlug,
+		...stats,
+		created_at: new Date(),
+	});
 }
 
-async function getCollectionStats(contractAddress) {
+async function getLastIcyToolsData(collectionSlug) {
+	return await getConnection().collection('icy_tools_stats').findOne(
+		{collection_slug: collectionSlug},
+		{sort: {id: -1}},
+	);
+}
+
+async function getIcyToolsCollectionStats(contractAddress) {
   const url = 'https://graphql.icy.tools/graphql';
   const API_KEY = '191264f1bd0c46f39c9dbc2cef04b7a3';
 
@@ -54,12 +66,11 @@ async function getCollectionStats(contractAddress) {
     }),
   });
 
-  const collectionStats = data.data.contract;
-  return collectionStats;
+  return data.data.contract.stats;
 }
 
-getCollectionStats(COLLECTION.contractAddress).then((res) => console.log(res)).catch(console.error);
-
 module.exports = {
-	getCollectionStats,
+	getLastIcyToolsData,
+	getIcyToolsCollectionStats,
+	parseIcyToolsCollectionStats,
 }

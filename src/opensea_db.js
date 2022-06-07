@@ -79,7 +79,7 @@ async function saveCalculatedStats(collectionSlug, batchId, data) {
 	const result = {
 		batch_id: batchId,
 		collection_slug: collectionSlug,
-		created_at: new Date,
+		created_at: new Date(),
 		...data,
 	}
 

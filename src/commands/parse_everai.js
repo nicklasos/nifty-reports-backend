@@ -25,10 +25,30 @@ async function run() {
 		const twitterFollowers = await getTwitterFollowers(twitterHandle);
 
 		const stats = {
-			...collection.stats,
+			chain: 'eth',
 			image_url: contract.image_url,
+			name: contract.collection.name,
+			slug: contract.collection.slug,
+			tokenId: contract.symbol,
+			description: contract.collection.description,
+			external_link: contract.collection.external_url,
+			contract_address: contract.address,
 			contract_creation_date: contract.created_date,
 			twitter_followers: twitterFollowers,
+			price: {
+				floor: collection.stats.floor_price,
+				average: collection.stats.one_day_average_price
+			},
+			sales: {
+				daily: collection.stats.one_day_sales,
+				weekly: collection.stats.seven_day_sales,
+				monthly: collection.stats.thirty_day_sales
+			},
+			volume: {
+				daily: collection.stats.one_day_volume,
+				weekly: collection.stats.seven_day_volume,
+				monthly: collection.stats.thirty_day_volume
+			},
 		}
 
 		await saveCollectionStats(collectionSlug, stats);

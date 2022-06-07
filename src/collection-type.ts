@@ -1,43 +1,54 @@
 type Collection = {
-  lastFetched: Date; // 2022-05-05
-  statsFor: Date; // 2022-05-04
-  name: string; // Everai Heroes: DUO
-  slug: string; // everai-heroes-duo
-  tokenId: string; // EveraiDUO
-  imageUrl: string; // aws.s3/
-  totalSupply: number; // 7777
-  chain: "eth" | "sol"; // 'eth'
-  contractAddress: string; //0x9a38DEC0590aBC8c883d72E52391090e948DdF12
-  contractCreatedData: Date; // 2022-03-05
-  owners: number; // 3000
-  pfps: number; // 400
-  twitterFollowers: number; // 82.2
-  discord: number; // 24.2
+  lastFetched: Date; // 2022-05-05 ❌
+  createdAt: Date; // ✅ 2022-05-04 ✅
+  name: string; // ✅ Everai Heroes: DUO
+  slug: string; // ✅ everai-heroes-duo
+  description: string; // ✅ yada-yada
+  externalLink: string; // ✅ everai.xyz
+  tokenId: string; // ✅ EveraiDUO
+  imageUrl: string; // ✅ aws.s3/
+  totalSupply: number; // ✅ 7777
+  chain: "eth" | "sol"; // ✅ 'eth'
+  contractAddress: string; // ✅ 0x9a38DEC0590aBC8c883d72E52391090e948DdF12 ❌
+  contractCreationDate: Date; // ✅ 2022-03-05
+  communitySize: number; // ✅ 400
+  twitterFollowers: number; // ✅ 822000
+  discord: number; // ❌ 24.2
   price: {
-    floor: string; // 0.345
-    top: string; // 6.215
-    avg: string; // 0.764
+    // ✅ OPENSEA STATS
+    floor: string; // OPENSEA FLOOR 0.345
+    average: string; // OPENSEA one_day_average_price 0.764
   };
-  sales: {
+  salesPrice: {
+    // ✅ ICY TOOLS STATS
+    lowest: string; // ICY-TOOLS FLOOR 0.15
+    highest: string; // ICY-TOOLS CEILING 6.215
+  };
+  salesAmount: {
+    // ✅ OPENSEA STATS
     daily: number; // 76
     weekly: number; // 342
     monthly: number; // 14092
   };
   volume: {
+    // ✅ OPENSEA STATS
     daily: number;
     weekly: number;
     monthly: number;
   };
   uniqueHolders: {
+    // ✅ OPENSEA STATS
     number: number; // 3000
     ratio: number; // 40 (%)
   };
   topHolders: {
+    // ✅ openseaCalculatedStats
     top10: number; // 100
     top50: number; // 15
     top100: number; // 5
   };
   holdAmount: {
+    // ✅ openseaCalculatedStats
     single: {
       number: number; // 2400
       ratio: number; // 68 (%)
@@ -52,6 +63,7 @@ type Collection = {
     };
   };
   holdTime: {
+    // ✅
     week: {
       number: number; // 2000
       ratio: number; // 33 (%)
@@ -66,6 +78,7 @@ type Collection = {
     };
   };
   blueChipHolders: {
+    // ❌
     number: number;
     ratio: number;
   };

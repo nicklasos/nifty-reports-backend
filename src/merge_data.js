@@ -13,12 +13,12 @@ async function mergeData(collectionSlug) {
 	// console.log(openseaStats);
 	// console.log(optickCommunitySize);
 	// console.log(openseaCalculatedStats);
-
+	
 	const data = {
 		...openseaCalculatedStats,
 		...openseaStats,
 		...icyTools,
-		...optickCommunitySize,
+		community_size: optickCommunitySize.community_size,
 	}
 
 	delete data['_id'];

@@ -21,6 +21,9 @@ async function getLastIcyToolsData(collectionSlug) {
 	);
 }
 
+// FLOOR - LOWEST SOLD NFT
+// CEILING - HIGHEST SOLD NFT
+
 async function getIcyToolsCollectionStats(contractAddress) {
   const url = 'https://graphql.icy.tools/graphql';
   const API_KEY = '191264f1bd0c46f39c9dbc2cef04b7a3';
@@ -52,10 +55,7 @@ async function getIcyToolsCollectionStats(contractAddress) {
                 }
               ) {
                 floor
-                volume
-                average
                 ceiling
-                totalSales
                 }
               }
             }
@@ -69,7 +69,12 @@ async function getIcyToolsCollectionStats(contractAddress) {
     }),
   });
 
-  return data.data.contract.stats;
+  const salesPrice = {
+    lowest: data.data.contract.stats.floor,
+    highest: data.data.contract.stats.ceiling,
+  }
+
+  return { salesPrice };
 }
 
 module.exports = {

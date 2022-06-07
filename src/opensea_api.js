@@ -29,7 +29,6 @@ async function getAssets(collectionSlug, cursor) {
 async function getContractStats(contractAddress) {
 	const url = `/asset_contract/${contractAddress}`;
 
-	// grab "image_url" and "created_date"
 	const { data } = await request.get(url);
 
 	return data;

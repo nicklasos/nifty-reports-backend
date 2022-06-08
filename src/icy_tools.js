@@ -17,7 +17,7 @@ async function parseIcyToolsCollectionStats(collectionSlug, contractAddress) {
 async function getLastIcyToolsData(collectionSlug) {
 	return await getConnection().collection('icy_tools_stats').findOne(
 		{collection_slug: collectionSlug},
-		{sort: {id: -1}},
+		{sort: {_id: -1}},
 	);
 }
 

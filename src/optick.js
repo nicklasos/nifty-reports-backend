@@ -18,7 +18,7 @@ async function parseOptickCommunitySize(collectionSlug, id) {
 async function getLastOptickCommunitySize(collectionSlug) {
 	return await getConnection().collection('optick_community_size').findOne(
 		{collection_slug: collectionSlug},
-		{sort: {id: -1}},
+		{sort: {_id: -1}},
 	);
 }
 

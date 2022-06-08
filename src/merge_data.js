@@ -19,6 +19,7 @@ async function mergeData(collectionSlug) {
 		...openseaStats,
 		...icyTools,
 		community_size: optickCommunitySize.community_size,
+		created_at: new Date(),
 	}
 
 	delete data['_id'];

@@ -1363,7 +1363,7 @@ const uniqueHolders_PCT = (uniqueHolders * 100 / COLLECTION_SIZE).toFixed(2);
 // 3. GET top10, 50, 100 holder amounts
 const TOP_10 = 10;
 const TOP_50 = 50;
-const TOP_100 = 50;
+const TOP_100 = 100;
 
 const top10Holder = [...extendedMap.values()].slice(TOP_10 - 1, TOP_10)[0]?.amount;
 const top50Holder = [...extendedMap.values()].slice(TOP_50 - 1, TOP_50)[0]?.amount;
@@ -1390,8 +1390,6 @@ const quadNftHoldersRatio = ((quadNftHolders / uniqueHolders) * 100).toFixed(2);
 // console.log(`Holders w/ ${singleNftHolders} NFT are ${singleNftHolderRatio}%`);
 // console.log(`Holders w/ ${tripleNftHolders} NFT are ${tripleNftHoldersRatio}%`);
 // console.log(`Holders w/ ${quadNftHolders} NFT are ${quadNftHoldersRatio}%`);
-
-
 
 
 // 5b. CALCULATE How long people hodl

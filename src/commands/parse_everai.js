@@ -33,21 +33,29 @@ async function run() {
 			description: contract.collection.description,
 			external_link: contract.collection.external_url,
 			contract_address: contract.address,
+			total_supply: collection.stats.total_supply,
 			contract_creation_date: contract.created_date,
 			twitter_followers: twitterFollowers,
 			price: {
 				floor: collection.stats.floor_price,
-				average: collection.stats.one_day_average_price
+				average: {
+					daily: collection.stats.one_day_average_price,
+					weekly: collection.stats.seven_day_average_price,
+					monthly: collection.stats.thirty_day_average_price,
+					total: collection.stats.average_price
+				}
 			},
 			sales: {
 				daily: collection.stats.one_day_sales,
 				weekly: collection.stats.seven_day_sales,
-				monthly: collection.stats.thirty_day_sales
+				monthly: collection.stats.thirty_day_sales,
+				total: collection.stats.total_sales
 			},
 			volume: {
 				daily: collection.stats.one_day_volume,
 				weekly: collection.stats.seven_day_volume,
-				monthly: collection.stats.thirty_day_volume
+				monthly: collection.stats.thirty_day_volume,
+				total: collection.stats.total_volume
 			},
 		}
 

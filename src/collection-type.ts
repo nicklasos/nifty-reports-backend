@@ -17,12 +17,23 @@ type Collection = {
   price: {
     // ✅ OPENSEA STATS
     floor: string; // OPENSEA FLOOR 0.345
-    average: string; // OPENSEA one_day_average_price 0.764
+    average: {
+      // OPENSEA one_day_average_price 0.764
+      daily: string;
+      weekly: string;
+      monthly: string;
+    };
   };
   salesPrice: {
     // ✅ ICY TOOLS STATS
-    lowest: string; // ICY-TOOLS FLOOR 0.15
-    highest: string; // ICY-TOOLS CEILING 6.215
+    daily: {
+      lowest: string; // ICY-TOOLS FLOOR 0.15
+      highest: string; // ICY-TOOLS CEILING 6.215
+    };
+    weekly: {
+      lowest: string; // ICY-TOOLS FLOOR 0.15
+      highest: string; // ICY-TOOLS CEILING 6.215
+    };
   };
   salesAmount: {
     // ✅ OPENSEA STATS
@@ -76,6 +87,10 @@ type Collection = {
       number: number; // 2000
       ratio: number; // 33 (%)
     };
+  };
+  listed?: {
+    number: number;
+    ratio: number;
   };
   blueChipHolders: {
     // ❌

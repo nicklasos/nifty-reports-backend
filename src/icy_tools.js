@@ -1,15 +1,29 @@
 const axios = require('axios');
 const {getConnection} = require("./mongo");
-const {changeObjectKey} = require("./helpers");
+const fns = require('date-fns');
+
 
 async function parseIcyToolsCollectionStats(collectionSlug, contractAddress) {
-	const stats = await getIcyToolsCollectionStats(contractAddress);
+  // Last day
+  const yesterdayDate = fns.startOfYesterday();
+	const daily_stats = await getIcyToolsCollectionStats(contractAddress, yesterdayDate);
 
-	changeObjectKey(stats, 'totalSales', 'total_sales');
+  // Last week
+  const weekAgoDate = fns.sub(new Date(fns.startOfToday()), {weeks: 1});
+	const weekly_stats = await getIcyToolsCollectionStats(contractAddress, weekAgoDate);
 
+  // Last month
+  // (!) NOT SUPPORTED BY ICY_TOOLS
+  // ERROR: "message": "You can only query aggregate stats within a 7 day range.",
+  
 	await getConnection().collection('icy_tools_stats').insertOne({
 		collection_slug: collectionSlug,
-		...stats,
+		daily: {
+      ...daily_stats
+    },
+    weekly: {
+      ...weekly_stats
+    },
 		created_at: new Date(),
 	});
 }
@@ -23,18 +37,13 @@ async function getLastIcyToolsData(collectionSlug) {
 
 // FLOOR - LOWEST SOLD NFT
 // CEILING - HIGHEST SOLD NFT
+// Default {endDate} is Today
 
-async function getIcyToolsCollectionStats(contractAddress) {
+async function getIcyToolsCollectionStats(contractAddress, startDate) {
   const url = 'https://graphql.icy.tools/graphql';
   const API_KEY = '191264f1bd0c46f39c9dbc2cef04b7a3';
 
   if(!contractAddress) throw new Error('Please provide a contract address');
-  
-  const todayStamp = new Date().getTime();
-  const yesterdayTimeStamp = todayStamp - 24*60*60*1000;
-  
-  const todayDate = new Date().toISOString();
-  const yesterdayDate = new Date(yesterdayTimeStamp).toISOString();
 
   const { data } = await axios({
     url,
@@ -45,13 +54,13 @@ async function getIcyToolsCollectionStats(contractAddress) {
     },
     data: JSON.stringify({
       query: `
-          query CollectionStats($contractAddress: String!, $today: Date!, $yesterday: Date!) {
+          query CollectionStats($contractAddress: String!, $endDate: Date!, $startDate: Date!) {
             contract(address: $contractAddress) {
               ... on ERC721Contract {
               stats(
                 timeRange: {
-                  gte: $yesterday
-                  lt: $today
+                  gte: $startDate
+                  lt: $endDate
                 }
               ) {
                 floor
@@ -63,8 +72,8 @@ async function getIcyToolsCollectionStats(contractAddress) {
         `,
       variables: {
         contractAddress,
-        today: todayDate,
-        yesterday: yesterdayDate
+        endDate: fns.startOfToday(),
+        startDate: startDate
       },
     }),
   });
@@ -74,7 +83,7 @@ async function getIcyToolsCollectionStats(contractAddress) {
     highest: data.data.contract.stats.ceiling,
   }
 
-  return { salesPrice };
+  return salesPrice;
 }
 
 module.exports = {

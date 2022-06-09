@@ -17,7 +17,7 @@ async function mergeData(collectionSlug) {
 	const data = {
 		...openseaCalculatedStats,
 		...openseaStats,
-		...icyTools,
+		salesPrice: {...icyTools},
 		community_size: optickCommunitySize.community_size,
 		created_at: new Date(),
 	}

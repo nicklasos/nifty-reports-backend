@@ -10,10 +10,10 @@ async function createNewBatch(collectionSlug) {
 
 	const collection = getConnection().collection('opensea_assets_batch');
 
-	const lastBatch = await getLastBatchId(collectionSlug);
+	const lastBatchId = await getLastBatchId(collectionSlug);
 
-	if (lastBatch) {
-		batch.id = lastBatch.id + 1;
+	if (lastBatchId) {
+		batch.id = lastBatchId + 1;
 	}
 
 	await collection.insertOne(batch);
@@ -36,11 +36,11 @@ async function markBatchAsDone(collectionSlug, id) {
 async function getLastBatchId(collectionSlug) {
 	const lastBatch = await getConnection().collection('opensea_assets_batch').findOne(
 		{collection_slug: collectionSlug},
-		{sort: {_id: -1}},
+		{sort: {id: -1}},
 	);
 
 	if (lastBatch) {
-		return lastBatch.batch_id;
+		return lastBatch.id;
 	}
 
 	return null;

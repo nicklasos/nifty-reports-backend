@@ -4,7 +4,10 @@ const {getConnection} = require("./mongo");
 async function parseOptickCommunitySize(collectionSlug, id) {
 	const optickCommunitySize = await getConnection().collection('optick_community_size');
 
+	// OLD ENDPOINT
 	const url = `https://inspect-app.optick.xyz/collections/details?id=${id.toLowerCase()}&limit=100000&user_id=web-app`;
+	// NEW ENDPOINT
+	// https://www.nftinspect.xyz/_next/data/FXJNZbFuXxwEYKdpKfGND/collections/0x9a38dec0590abc8c883d72e52391090e948ddf12.json?idAndTab=0x9a38dec0590abc8c883d72e52391090e948ddf12
 
 	const res = await axios.get(url);
 

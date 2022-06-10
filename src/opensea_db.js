@@ -36,7 +36,7 @@ async function markBatchAsDone(collectionSlug, id) {
 async function getLastBatchId(collectionSlug) {
 	const lastBatch = await getConnection().collection('opensea_assets_batch').findOne(
 		{collection_slug: collectionSlug},
-		{sort: {id: -1}},
+		{sort: {_id: -1}},
 	);
 
 	if (lastBatch) {

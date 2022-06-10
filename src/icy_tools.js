@@ -18,21 +18,25 @@ async function parseIcyToolsCollectionStats(collectionSlug, contractAddress) {
   
 	await getConnection().collection('icy_tools_stats').insertOne({
 		collection_slug: collectionSlug,
-		daily: {
-      ...daily_stats
-    },
-    weekly: {
-      ...weekly_stats
+    data: {
+      daily: {
+        ...daily_stats
+      },
+      weekly: {
+        ...weekly_stats
+      }
     },
 		created_at: new Date(),
 	});
 }
 
 async function getLastIcyToolsData(collectionSlug) {
-	return await getConnection().collection('icy_tools_stats').findOne(
+	const { data } = await getConnection().collection('icy_tools_stats').findOne(
 		{collection_slug: collectionSlug},
 		{sort: {_id: -1}},
 	);
+
+  return { salesPrice: data };
 }
 
 // FLOOR - LOWEST SOLD NFT

@@ -3,12 +3,12 @@ const axios = require("axios");
 const {saveCalculatedStats, getLastBatchId, createNewBatch, markBatchAsDone} = require("./opensea_db");
 const {getAssets} = require("./opensea_api");
 
-async function calculateAndSaveStatsFromLastBatch(collectionSlug) {
+async function calculateAndSaveStatsFromLastBatch(collectionSlug, collectionSize) {
 	const batchId = await getLastBatchId(collectionSlug);
-	await calculateAndSaveStats(collectionSlug, batchId);
+	await calculateAndSaveStats(collectionSlug, collectionSize, batchId);
 }
 
-async function calculateAndSaveStats(collectionSlug, batchId) {
+async function calculateAndSaveStats(collectionSlug, collectionSize, batchId) {
 	const assets = await getConnection().collection('opensea_assets').find({
 		collection_slug: collectionSlug,
 		batch: batchId,
@@ -20,31 +20,30 @@ async function calculateAndSaveStats(collectionSlug, batchId) {
 		return;
 	}
 
-	const finalData = await calculateStats(data);
+	const finalData = await calculateStats(data, collectionSize);
 
 	await saveCalculatedStats(collectionSlug, batchId, finalData);
 }
 
-async function calculateStats(data) {
+async function calculateStats(data, collectionSize) {
 	// 1. SIMPLIFY THE HUGE OBJECT INTO MAP OF UNIQUE WALLETS
 	const reducedData = new Map();
 
 	data.forEach(nft => {
-		const {owner: {address}, last_sale, token_id, collection_created_date} = nft;
+		const { owner: {address}, last_sale, token_id, collection_created_date } = nft;
 
-		// Check if sale event exist otherwise set mint date as event timestamp
-		// TODO: use contractCreationDate from `getContractStats`
-		const saleEvent = last_sale?.event_timestamp ?? collection_created_date;
+  // Check if sale event exist otherwise set mint date as event timestamp
+  const saleEvent = last_sale?.event_timestamp ?? collection_created_date;
 
-		if (reducedData.has(address)) {
-			const {amount, holdingSince} = reducedData.get(address);
+  if (reducedData.has(address)) {
+    const { amount, holdingSince } = reducedData.get(address);
 
-			const newHoldingSince = holdingSince > saleEvent ? saleEvent : holdingSince;
+    const newHoldingSince = holdingSince > saleEvent ? saleEvent : holdingSince;
 
-			reducedData.set(address, {amount: amount + 1, holdingSince: newHoldingSince});
+    reducedData.set(address, { tokenId: token_id, amount: amount + 1, holdingSince: newHoldingSince.split('T', 1)[0] });
 		} else {
-			reducedData.set(address, {amount: 1, holdingSince: saleEvent, tokenId: token_id});
-		}
+		reducedData.set(address, { tokenId: token_id, amount: 1, holdingSince: saleEvent.split('T', 1)[0]  });
+  }
 	});
 
 
@@ -92,8 +91,6 @@ async function calculateStats(data) {
 
 // 2. SORT BASED ON NFTS per WALLET
 
-	const COLLECTION_SIZE = 7777;
-
 	const sortedMap = new Map([...reducedData.entries()].sort(([keyA, valueA], [keyB, valueB]) => valueB.amount - valueA.amount))
 
 // CALCULATE HOW LONG HAVE EACH BEEN LONGEST HOLDING FOR (DAYS);
@@ -112,14 +109,14 @@ async function calculateStats(data) {
 	}));
 
 	const uniqueHolders = extendedMap.size;
-	const uniqueHolders_PCT = (uniqueHolders * 100 / COLLECTION_SIZE).toFixed(2);
+	const uniqueHoldersRatio = (uniqueHolders * 100 / collectionSize).toFixed(2);
 
 // console.log(uniqueHolders);
 
 // 3. GET top10, 50, 100 holder amounts
 	const TOP_10 = 10;
 	const TOP_50 = 50;
-	const TOP_100 = 50;
+	const TOP_100 = 100;
 
 	const top10Holder = [...extendedMap.values()].slice(TOP_10 - 1, TOP_10)[0]?.amount;
 	const top50Holder = [...extendedMap.values()].slice(TOP_50 - 1, TOP_50)[0]?.amount;
@@ -136,16 +133,16 @@ async function calculateStats(data) {
 
 	const singleNftHolders = [...extendedMap.values()].filter(wallet => wallet.amount === SINGLE).length;
 	const tripleNftHolders = [...extendedMap.values()].filter(wallet => wallet.amount > SINGLE && wallet.amount <= TRIPLE).length;
-	const quadNftHolders = [...extendedMap.values()].filter(wallet => wallet.amount > QUAD).length;
+	const quadNftHolders = [...extendedMap.values()].filter(wallet => wallet.amount >= QUAD).length;
 
 // 4b. CALCULATE % of wallets with 1, 2-3, 4+ NFTS
 	const singleNftHolderRatio = ((singleNftHolders / uniqueHolders) * 100).toFixed(2);
 	const tripleNftHoldersRatio = ((tripleNftHolders / uniqueHolders) * 100).toFixed(2);
 	const quadNftHoldersRatio = ((quadNftHolders / uniqueHolders) * 100).toFixed(2);
 
-// console.log(`Holders w/ ${singleNftHolders} NFT are ${singleNftHolderRatio}%`);
-// console.log(`Holders w/ ${tripleNftHolders} NFT are ${tripleNftHoldersRatio}%`);
-// console.log(`Holders w/ ${quadNftHolders} NFT are ${quadNftHoldersRatio}%`);
+// console.log(`Holders w/ ${SINGLE} NFT - ${singleNftHolders} are ${singleNftHolderRatio}%`);
+// console.log(`Holders w/ 2-${TRIPLE} NFTs - ${tripleNftHolders} are ${tripleNftHoldersRatio}%`);
+// console.log(`Holders w/ > ${QUAD} NFTs - ${quadNftHolders} NFT are ${quadNftHoldersRatio}%`);
 
 
 // 5b. CALCULATE How long people hodl
@@ -173,7 +170,7 @@ async function calculateStats(data) {
 	const finalStats = {
 		unique_holders: {
 			number: uniqueHolders,
-			ratio: uniqueHolders_PCT
+			ratio: uniqueHoldersRatio
 		},
 		top_holders: {
 			top10: top10Holder,
@@ -217,7 +214,7 @@ async function calculateStats(data) {
 	return finalStats;
 }
 
-async function parseOpenseaAssets(collectionSlug) {
+async function parseOpenseaAssets(collectionSlug, collectionSize) {
 	const openseaAssets = await getConnection().collection('opensea_assets');
 
 	let cursor = null;
@@ -262,7 +259,7 @@ async function parseOpenseaAssets(collectionSlug) {
 	} while (cursor);
 
 	await markBatchAsDone(collectionSlug, batch.id);
-	await calculateAndSaveStats(collectionSlug, batch.id);
+	await calculateAndSaveStats(collectionSlug, collectionSize, batch.id);
 }
 
 module.exports = {

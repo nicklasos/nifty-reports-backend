@@ -9,6 +9,7 @@ const {saveCollectionStats} = require("../opensea_db");
 const {parseIcyToolsCollectionStats} = require("../icy_tools");
 // const {parseOptickCommunitySize} = require("../optick");
 const {mergeData} = require("../merge_data");
+const {generateScreenshots} = require("../screenshot");
 
 const collectionSlug = 'everai-heroes-duo';
 const contractAddress = '0x9a38DEC0590aBC8c883d72E52391090e948DdF12';
@@ -66,7 +67,9 @@ async function run() {
 
 		// await parseOptickCommunitySize(collectionSlug, contractAddress);
 
-		await mergeData(collectionSlug);
+		const data = await mergeData(collectionSlug);
+
+		await generateScreenshots(data);
 
 	} finally {
 		await close();

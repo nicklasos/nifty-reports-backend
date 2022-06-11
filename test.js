@@ -1,8 +1,9 @@
 const path = require("path");
 require("dotenv").config({path: path.resolve(__dirname, ".env")});
 
-const {connect, close} = require("./src/mongo");
-const {getLastBatchId} = require("./src/opensea_db");
+const {connect, close, getConnection} = require("./src/mongo");
+const {captureScreenshot, generateScreenshots} = require("./src/screenshot");
+const {mergeData, getLastCollectionStats} = require("./src/merge_data");
 
 const collectionSlug = 'everai-heroes-duo';
 
@@ -10,25 +11,14 @@ async function run() {
 	try {
 		await connect();
 
-		const lastBatch = await getLastBatchId('everai-heroes-duo');
-		console.log(lastBatch);
+		// const data = await mergeData(collectionSlug);
+		const data = await getLastCollectionStats(collectionSlug, false);
 
-		// const result = await calculateBlueChip();
+		// console.log(data.screenshots.daily_snapshot);
 
-		// await calculateAndSaveStatsFromLastBatch('everai-heroes-duo');
+		await generateScreenshots(data);
 
-		// await mergeData(collectionSlug);
-
-
-		// await getConnection().collection('user').insertOne({
-		// 	email: 'nicklasos+1@gmail.com',
-		// 	name: 'Nicklasos+1',
-		// })
-		//
-		// await getConnection().collection('users').insertOne({
-		// 	email: 'nicklasos+2@gmail.com',
-		// 	name: 'Nicklasos+2',
-		// })
+		// await captureScreenshot();
 
 	} finally {
 		await close();

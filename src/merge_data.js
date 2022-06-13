@@ -22,6 +22,7 @@ async function mergeData(collectionSlug) {
 		...icyTools,
 		created_at: new Date(),
 		done: false,
+		listed: 0,
 	}
 
 	delete data['_id'];

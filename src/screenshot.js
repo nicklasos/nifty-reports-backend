@@ -46,7 +46,10 @@ async function generateScreenshots(collectionStats) {
 
 	await updateCollectionStats(
 		collectionStats._id.toString(),
-		{screenshots: templates},
+		{
+			screenshots: templates,
+			done: false,
+		},
 	);
 }
 

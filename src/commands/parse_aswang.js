@@ -9,11 +9,10 @@ const {saveCollectionStats} = require("../opensea_db");
 const {parseIcyToolsCollectionStats} = require("../icy_tools");
 // const {parseOptickCommunitySize} = require("../optick");
 const {mergeData} = require("../merge_data");
-const {generateScreenshots} = require("../screenshot");
 
 const { collectionDetails } = require("../collection-details");
 
-const { collectionSlug, contractAddress, collectionSize, twitterHandle  } = collectionDetails['everai'];
+const { collectionSlug, contractAddress, collectionSize, twitterHandle  } = collectionDetails['aswang'];
 
 async function run() {
 	try {
@@ -66,9 +65,7 @@ async function run() {
 
 		// await parseOptickCommunitySize(collectionSlug, contractAddress);
 
-		const data = await mergeData(collectionSlug);
-
-		await generateScreenshots(data);
+		await mergeData(collectionSlug);
 
 	} finally {
 		await close();

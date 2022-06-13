@@ -61,6 +61,12 @@ async function captureScreenshot(url, path) {
 		overwrite: true,
 		width: 500,
 		height: 500,
+		launchOptions: {
+			args: [
+				'--no-sandbox',
+				'--disable-setuid-sandbox',
+			],
+		},
 	});
 }
 

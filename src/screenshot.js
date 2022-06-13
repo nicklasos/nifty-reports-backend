@@ -4,12 +4,12 @@ const fns = require('date-fns');
 const {updateCollectionStats} = require("./merge_data");
 
 async function generateScreenshots(collectionStats) {
-	const url = "https://nifty-reports-todya.vercel.app";
+	const url = "https://www.niftyreports.xyz";
 
 	const templates = {
-		"daily_snapshot": "",
-		"weekly_digest": "",
-		"community_health": "",
+		"daily-snapshot": "",
+		"weekly-digest": "",
+		"community-health": "",
 	};
 
 	const screenshotsDir = path.resolve(__dirname, "..", "screenshots");
@@ -36,11 +36,10 @@ async function generateScreenshots(collectionStats) {
 
 		let templateUrl = [
 			url,
-			"templates",
+			"raw",
 			collectionStats.collection_slug,
 			template,
-			collectionStats._id.toString(),
-		].join("/");
+		].join("/") + "?" + collectionStats._id.toString();
 
 		await captureScreenshot(templateUrl, fileFullPath);
 	}

@@ -4,6 +4,8 @@ const fns = require('date-fns');
 const {updateCollectionStats} = require("./merge_data");
 
 async function generateScreenshots(collectionStats) {
+	if (!collectionStats) throw new Error('No collection stats');
+
 	const url = "https://www.niftyreports.xyz";
 
 	const templates = {
@@ -48,7 +50,7 @@ async function generateScreenshots(collectionStats) {
 		collectionStats._id.toString(),
 		{
 			screenshots: templates,
-			done: false,
+			// done: false,
 		},
 	);
 }
@@ -59,8 +61,8 @@ async function captureScreenshot(url, path) {
 	await captureWebsite.file(url, path, {
 		delay: 3,
 		overwrite: true,
-		width: 500,
-		height: 500,
+		width: 450,
+		height: 450,
 		launchOptions: {
 			args: [
 				'--no-sandbox',

@@ -4,6 +4,7 @@ const {getTwitterFollowers} = require("../twitter_api");
 const {saveCollectionStats} = require("../opensea_db");
 const {parseIcyToolsCollectionStats} = require("../icy_tools");
 const {mergeData} = require("../merge_data");
+const {generateScreenshots} = require("../screenshot");
 
 async function parse({collectionSlug, contractAddress, collectionSize, twitterHandle}) {
 	await parseOpenseaAssets(collectionSlug, collectionSize);
@@ -52,7 +53,9 @@ async function parse({collectionSlug, contractAddress, collectionSize, twitterHa
 
 	// await parseOptickCommunitySize(collectionSlug, contractAddress);
 
-	await mergeData(collectionSlug);
+	const data = await mergeData(collectionSlug);
+
+	await generateScreenshots(data);
 }
 
 module.exports = {

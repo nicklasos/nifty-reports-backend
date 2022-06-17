@@ -61,8 +61,8 @@ async function captureScreenshot(url, path) {
 	await captureWebsite.file(url, path, {
 		delay: 3,
 		overwrite: true,
-		width: 450,
-		height: 450,
+		width: 472,
+		height: 472,
 		launchOptions: {
 			args: [
 				'--no-sandbox',

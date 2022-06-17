@@ -16,7 +16,7 @@ async function getCollectionStats(collectionSlug) {
 }
 
 async function getAssets(collectionSlug, cursor) {
-	let url = `/assets?collection_slug=${collectionSlug}&limit=50`;
+	let url = `/assets?collection_slug=${collectionSlug}&limit=50&include_orders=true`;
 	if (cursor) {
 		url = `${url}&cursor=${cursor}`;
 	}

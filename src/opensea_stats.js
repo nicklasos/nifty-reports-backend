@@ -22,30 +22,34 @@ async function calculateAndSaveStats(collectionSlug, collectionSize, batchId) {
 
 	const finalData = await calculateStats(data, collectionSize);
 
-	await saveCalculatedStats(collectionSlug, batchId, finalData);
+	// await saveCalculatedStats(collectionSlug, batchId, finalData);
 }
 
 async function calculateStats(data, collectionSize) {
 	// 1. SIMPLIFY THE HUGE OBJECT INTO MAP OF UNIQUE WALLETS
 	const reducedData = new Map();
+	let listed = 0;
 
 	data.forEach(nft => {
-		const { owner: {address}, last_sale, token_id, collection_created_date } = nft;
+		const { owner: {address}, last_sale, token_id, collection_created_date, active_orders } = nft;
 
-  // Check if sale event exist otherwise set mint date as event timestamp
-  const saleEvent = last_sale?.event_timestamp ?? collection_created_date;
+		if(active_orders) listed++;
+		// Check if sale event exist otherwise set mint date as event timestamp
+		const saleEvent = last_sale?.event_timestamp ?? collection_created_date;
 
-  if (reducedData.has(address)) {
-    const { amount, holdingSince } = reducedData.get(address);
+		if (reducedData.has(address)) {
+			const { amount, holdingSince } = reducedData.get(address);
 
-    const newHoldingSince = holdingSince > saleEvent ? saleEvent : holdingSince;
+			const newHoldingSince = holdingSince > saleEvent ? saleEvent : holdingSince;
 
-    reducedData.set(address, { tokenId: token_id, amount: amount + 1, holdingSince: newHoldingSince.split('T', 1)[0] });
-		} else {
-		reducedData.set(address, { tokenId: token_id, amount: 1, holdingSince: saleEvent.split('T', 1)[0]  });
-  }
+			reducedData.set(address, { tokenId: token_id, amount: amount + 1, holdingSince: newHoldingSince.split('T', 1)[0] });
+			} else {
+			reducedData.set(address, { tokenId: token_id, amount: 1, holdingSince: saleEvent.split('T', 1)[0]  });
+		}
 	});
 
+		/* Listed NFTs */
+		const listedRatio = (listed * 100 / collectionSize).toFixed(2);
 
 //  FIND BLUE CHIP
 	let blueChipHolder = 0;
@@ -108,6 +112,7 @@ async function calculateStats(data, collectionSize) {
 		}]
 	}));
 
+	/* Unique holders */
 	const uniqueHolders = extendedMap.size;
 	const uniqueHoldersRatio = (uniqueHolders * 100 / collectionSize).toFixed(2);
 
@@ -205,6 +210,10 @@ async function calculateStats(data, collectionSize) {
 				ratio: overMonthHoldersRatio
 			}
 		},
+		listed: {
+			number: listed,
+			ratio: listedRatio,
+		}
 		// blueChipHolders: {
 		// 	number: 0,
 		// 	ration: 0
@@ -248,6 +257,7 @@ async function parseOpenseaAssets(collectionSlug, collectionSize) {
 			transfer_fee: asset.transfer_fee,
 			token_id: asset.token_id,
 			asset_contract: asset.asset_contract,
+			active_orders: asset.sell_orders || asset.seaport_sell_orders,
 			collection_created_date:
 				asset.collection.created_date.substring(0, asset.collection.created_date.indexOf('.')),
 		}));

@@ -22,7 +22,7 @@ async function calculateAndSaveStats(collectionSlug, collectionSize, batchId) {
 
 	const finalData = await calculateStats(data, collectionSize);
 
-	// await saveCalculatedStats(collectionSlug, batchId, finalData);
+	await saveCalculatedStats(collectionSlug, batchId, finalData);
 }
 
 async function calculateStats(data, collectionSize) {

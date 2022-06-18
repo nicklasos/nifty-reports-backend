@@ -50,7 +50,7 @@ async function generateScreenshots(collectionStats) {
 		collectionStats._id.toString(),
 		{
 			screenshots: templates,
-			// done: false,
+			done: true,
 		},
 	);
 }

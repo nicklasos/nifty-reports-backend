@@ -2,6 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const fns = require('date-fns');
 const {updateCollectionStats} = require("./merge_data");
+const Jimp = require('jimp') ;
 
 async function generateScreenshots(collectionStats) {
 	if (!collectionStats) throw new Error('No collection stats');
@@ -70,9 +71,25 @@ async function captureScreenshot(url, path) {
 			],
 		},
 	});
+
+	await cropImage(path);
+}
+
+async function cropImage(imagePath) {
+	const image = await Jimp.read(
+		// '/Users/mykytaolkhovyk/Projects/nft/nifty/nifty-reports-backend/screenshots/everai-heroes-duo/2022-06-11/everai-heroes-duo_community-health_2022-06-11.png'
+		imagePath
+	);
+
+	image.crop(0, 0, 472*2, 472*2)
+		.write(
+			// '/Users/mykytaolkhovyk/Projects/nft/nifty/nifty-reports-backend/screenshots/everai-heroes-duo/2022-06-11/everai-heroes-duo_community-health_2022-06-11-cropped.png'
+			imagePath
+		);
 }
 
 module.exports = {
 	captureScreenshot,
 	generateScreenshots,
+	cropImage,
 }

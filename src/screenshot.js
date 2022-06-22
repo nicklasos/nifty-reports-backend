@@ -42,7 +42,7 @@ async function generateScreenshots(collectionStats) {
 			"raw",
 			collectionStats.collection_slug,
 			template,
-		].join("/") + "?" + collectionStats._id.toString();
+		].join("/") + "?id=" + collectionStats._id.toString();
 
 		await captureScreenshot(templateUrl, fileFullPath);
 	}

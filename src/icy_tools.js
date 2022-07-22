@@ -1,40 +1,48 @@
 const axios = require('axios');
-const {getConnection} = require("./mongo");
 const fns = require('date-fns');
 
+const { getConnection } = require('./mongo');
+const { formatFloat } = require('./utils');
 
 async function parseIcyToolsCollectionStats(collectionSlug, contractAddress) {
   // Last day
   const yesterdayDate = fns.startOfYesterday();
-	const daily_stats = await getIcyToolsCollectionStats(contractAddress, yesterdayDate);
+  const daily_stats = await getIcyToolsCollectionStats(
+    contractAddress,
+    yesterdayDate
+  );
 
   // Last week
-  const weekAgoDate = fns.sub(new Date(fns.startOfToday()), {weeks: 1});
-	const weekly_stats = await getIcyToolsCollectionStats(contractAddress, weekAgoDate);
+  const weekAgoDate = fns.sub(new Date(fns.startOfToday()), { weeks: 1 });
+  const weekly_stats = await getIcyToolsCollectionStats(
+    contractAddress,
+    weekAgoDate
+  );
 
   // Last month
   // (!) NOT SUPPORTED BY ICY_TOOLS
   // ERROR: "message": "You can only query aggregate stats within a 7 day range.",
-  
-	await getConnection().collection('icy_tools_stats').insertOne({
-		collection_slug: collectionSlug,
-    data: {
-      daily: {
-        ...daily_stats
+
+  await getConnection()
+    .collection('icy_tools_stats')
+    .insertOne({
+      collection_slug: collectionSlug,
+      data: {
+        daily: {
+          ...daily_stats,
+        },
+        weekly: {
+          ...weekly_stats,
+        },
       },
-      weekly: {
-        ...weekly_stats
-      }
-    },
-		created_at: new Date(),
-	});
+      created_at: new Date(),
+    });
 }
 
 async function getLastIcyToolsData(collectionSlug) {
-	const { data } = await getConnection().collection('icy_tools_stats').findOne(
-		{collection_slug: collectionSlug},
-		{sort: {_id: -1}},
-	);
+  const { data } = await getConnection()
+    .collection('icy_tools_stats')
+    .findOne({ collection_slug: collectionSlug }, { sort: { _id: -1 } });
 
   return { salesPrice: data };
 }
@@ -47,14 +55,14 @@ async function getIcyToolsCollectionStats(contractAddress, startDate) {
   const url = 'https://graphql.icy.tools/graphql';
   const API_KEY = '191264f1bd0c46f39c9dbc2cef04b7a3';
 
-  if(!contractAddress) throw new Error('Please provide a contract address');
+  if (!contractAddress) throw new Error('Please provide a contract address');
 
   const { data } = await axios({
     url,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      "x-api-key": API_KEY
+      'x-api-key': API_KEY,
     },
     data: JSON.stringify({
       query: `
@@ -77,21 +85,21 @@ async function getIcyToolsCollectionStats(contractAddress, startDate) {
       variables: {
         contractAddress,
         endDate: fns.startOfToday(),
-        startDate: startDate
+        startDate: startDate,
       },
     }),
   });
 
   const salesPrice = {
-    lowest: data.data.contract.stats.floor,
-    highest: data.data.contract.stats.ceiling,
-  }
+    lowest: { value: formatFloat(data.data.contract.stats.floor)},
+    highest: { value: formatFloat(data.data.contract.stats.ceiling) },
+  };
 
   return salesPrice;
 }
 
 module.exports = {
-	getLastIcyToolsData,
-	getIcyToolsCollectionStats,
-	parseIcyToolsCollectionStats,
-}
+  getLastIcyToolsData,
+  getIcyToolsCollectionStats,
+  parseIcyToolsCollectionStats,
+};

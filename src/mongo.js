@@ -1,7 +1,7 @@
 const { MongoClient } = require('mongodb');
 
 if (!process.env.DB_URI) {
-	throw new Error('No DB_URI');
+  throw new Error('No DB_URI');
 }
 
 const client = new MongoClient(process.env.DB_URI);
@@ -9,29 +9,29 @@ const client = new MongoClient(process.env.DB_URI);
 let db = null;
 
 async function connect() {
-	if (db) return db;
+  if (db) return db;
 
-	await client.connect();
+  await client.connect();
 
-	if (!process.env.DB_NAME) {
-		throw new Error('No DB_NAME');
-	}
+  if (!process.env.DB_NAME) {
+    throw new Error('No DB_NAME');
+  }
 
-	db = client.db(process.env.DB_NAME);
+  db = client.db(process.env.DB_NAME);
 
-	return db;
+  return db;
 }
 
 async function close() {
-	await client.close();
+  await client.close();
 }
 
 function getConnection() {
-	return db;
+  return db;
 }
 
 module.exports = {
-	getConnection,
-	connect,
-	close,
-}
+  getConnection,
+  connect,
+  close,
+};

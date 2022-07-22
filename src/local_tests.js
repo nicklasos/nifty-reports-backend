@@ -19,12 +19,9 @@ const axios = require('axios');
 //   '0x300DB91ca086190d85a76bcc6B527375667cAF85'
 // ]
 
-
-
 // const calculateBlueChipHolders = async () => {
 //   const MORALIS_API_KEY = 'D72mKKMwESsyNu6iPqCHaqpmsrSb0YCQvg5GP2F1kuNwimHLyAWbKEE0XjGJdyUf'
-  
-  
+
 //   const values = await Promise.all(
 //     addresses.map(async (address) => {
 
@@ -40,7 +37,7 @@ const axios = require('axios');
 //       const matches = data.result.map(nft => {
 //         return BLUE_CHIP_COLLECTIONS.includes(nft.token_address);
 //       }).filter(Boolean);
-      
+
 //       return matches.length >= 1;
 //     }))
 
@@ -49,23 +46,24 @@ const axios = require('axios');
 
 // calculateBlueChipHolders().then((res) => console.log(res)).catch(console.error);
 
-
 const request = axios.create({
-	baseURL: 'https://api.twitter.com/2/users/by/username', ///todya_?user.fields=public_metrics
-	headers: {
-		'Authorization': 'Bearer AAAAAAAAAAAAAAAAAAAAALUvdAEAAAAAL0%2FHGAFZEqfiVOW4e2hNLvF%2FBO0%3DrDdt6x4HFIRE8fk4P87E4tH2q5IqUGXrPjj6ZUXOhbdPMPhDll',
-	}
+  baseURL: 'https://api.twitter.com/2/users/by/username', ///todya_?user.fields=public_metrics
+  headers: {
+    Authorization:
+      'Bearer AAAAAAAAAAAAAAAAAAAAALUvdAEAAAAAL0%2FHGAFZEqfiVOW4e2hNLvF%2FBO0%3DrDdt6x4HFIRE8fk4P87E4tH2q5IqUGXrPjj6ZUXOhbdPMPhDll',
+  },
 });
 
 async function getAccountMetrics(username) {
-	const url = `/${username}?user.fields=public_metrics`
-  
-	const { data: {data} } = await request.get(url);
-  
-  const followersCount = data.public_metrics.followers_count
- 
-	return followersCount;
+  const url = `/${username}?user.fields=public_metrics`;
+
+  const {
+    data: { data },
+  } = await request.get(url);
+
+  const followersCount = data.public_metrics.followers_count;
+
+  return followersCount;
 }
 
 getAccountMetrics('TheEverai');
-

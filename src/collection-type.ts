@@ -8,7 +8,7 @@ type Collection = {
   tokenId: string; // ✅ EveraiDUO
   imageUrl: string; // ✅ aws.s3/
   totalSupply: number; // ✅ 7777
-  chain: "eth" | "sol"; // ✅ 'eth'
+  chain: 'eth' | 'sol'; // ✅ 'eth'
   contractAddress: string; // ✅ 0x9a38DEC0590aBC8c883d72E52391090e948DdF12 ❌
   contractCreationDate: Date; // ✅ 2022-03-05
   communitySize: number; // ✅ 400

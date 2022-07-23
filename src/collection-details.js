@@ -17,6 +17,18 @@ const collectionDetails = {
     collectionSize: 10000,
     twitterHandle: 'childrenofukiyo',
   },
+  possessed: {
+    collectionSlug: 'thepossessed',
+    contractAddress: '0x3a2096754df385553c4252e5a82dc862e64169bb',
+    collectionSize: 10000,
+    twitterHandle: 'ThePossessedNFT',
+  },
+  zenogakki: {
+    collectionSlug: 'zenogakki-official-genesis',
+    contractAddress: '0x6372e41cd6415261cf38daccefed2f0cc206c282',
+    collectionSize: 10000,
+    twitterHandle: 'zenogakki',
+  },
 };
 
 module.exports = {

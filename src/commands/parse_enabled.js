@@ -11,7 +11,9 @@ async function run() {
     await connect();
 
     for (const [name, collection] of Object.entries(collectionDetails)) {
-      await parse(collection);
+      if (collection.enabled) {
+        await parse(collection);
+      }
     }
   } finally {
     await close();

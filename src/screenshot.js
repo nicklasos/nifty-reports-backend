@@ -10,9 +10,9 @@ async function generateScreenshots(collectionStats) {
   const url = 'https://www.niftyreports.xyz';
 
   const templates = {
-    'daily-snapshot': '',
-    'weekly-digest': '',
-    'community-health': '',
+    'snapshot': '',
+    'digest': '',
+    'health': '',
   };
 
   const screenshotsDir = path.resolve(__dirname, '..', 'screenshots');

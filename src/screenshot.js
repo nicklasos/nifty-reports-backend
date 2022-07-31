@@ -36,7 +36,7 @@ async function generateScreenshots(collectionStats) {
       let fileBasePath = path.join(
         collectionStats.collection_slug,
         date,
-        `${collectionStats.collection_slug}_${template}_${date}_${interval}.png`
+        `${collectionStats.collection_slug}_${template}_${interval}_${date}.png`
       );
 
       templates[template][interval] = fileBasePath;

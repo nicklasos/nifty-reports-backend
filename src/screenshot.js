@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const fns = require('date-fns');
-const { updateCollectionStats } = require('./merge_data');
+const {updateCollectionStats} = require('./merge_data');
 const Jimp = require('jimp');
 
 async function generateScreenshots(collectionStats) {
@@ -10,9 +10,21 @@ async function generateScreenshots(collectionStats) {
   const url = 'https://www.niftyreports.xyz';
 
   const templates = {
-    'snapshot': '',
-    'digest': '',
-    'health': '',
+    'snapshot': {
+      '1d': '',
+      '7d': '',
+      '30d': '',
+    },
+    'digest': {
+      '1d': '',
+      '7d': '',
+      '30d': '',
+    },
+    'health': {
+      '1d': '',
+      '7d': '',
+      '30d': '',
+    },
   };
 
   const screenshotsDir = path.resolve(__dirname, '..', 'screenshots');
@@ -20,26 +32,28 @@ async function generateScreenshots(collectionStats) {
   const date = fns.format(collectionStats.created_at, 'yyyy-MM-dd');
 
   for (let template of Object.keys(templates)) {
-    let fileBasePath = path.join(
-      collectionStats.collection_slug,
-      date,
-      `${collectionStats.collection_slug}_${template}_${date}.png`
-    );
+    for (let interval of Object.keys(templates[template])) {
+      let fileBasePath = path.join(
+        collectionStats.collection_slug,
+        date,
+        `${collectionStats.collection_slug}_${template}_${date}_${interval}.png`
+      );
 
-    templates[template] = fileBasePath;
+      templates[template][interval] = fileBasePath;
 
-    let fileFullPath = path.resolve(screenshotsDir, fileBasePath);
+      let fileFullPath = path.resolve(screenshotsDir, fileBasePath);
 
-    fs.mkdirSync(path.dirname(fileFullPath), {
-      recursive: true,
-    });
+      fs.mkdirSync(path.dirname(fileFullPath), {
+        recursive: true,
+      });
 
-    let templateUrl =
-      [url, 'raw', collectionStats.collection_slug, template].join('/') +
-      '?id=' +
-      collectionStats._id.toString();
+      let templateUrl =
+        [url, 'raw', collectionStats.collection_slug, template].join('/') +
+        '?id=' + collectionStats._id.toString() +
+        '&interval=' + interval;
 
-    await captureScreenshot(templateUrl, fileFullPath);
+      await captureScreenshot(templateUrl, fileFullPath);
+    }
   }
 
   await updateCollectionStats(collectionStats._id.toString(), {

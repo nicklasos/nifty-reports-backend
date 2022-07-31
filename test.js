@@ -15,6 +15,8 @@ const {
 
 const collectionSlug = 'everai-heroes-duo';
 
+const { collectionDetails } = require('./src/collection-details');
+
 async function run() {
   try {
     await connect();
@@ -32,6 +34,7 @@ async function run() {
     // const data = await mergeData(collectionSlug);
 
     // const data = await getLastCollectionStats(collectionSlug, true);
+
     // await generateScreenshots(data);
 
     // await captureScreenshot();

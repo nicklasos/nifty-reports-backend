@@ -34,6 +34,20 @@ const collectionDetails = {
     twitterHandle: 'zenogakki',
     enabled: true,
   },
+  atama: {
+    collectionSlug: 'projectatamaofficial',
+    contractAddress: '0xeF5E3e60BD031498318Ac97cF55db74357256282',
+    collectionSize: 333,
+    twitterHandle: 'atama_nft',
+    enabled: true,
+  },
+  isekaimeta: {
+    collectionSlug: 'projectisekaimeta',
+    contractAddress: '0x684E4ED51D350b4d76A3a07864dF572D24e6dC4c',
+    collectionSize: 7777,
+    twitterHandle: 'IsekaiMeta',
+    enabled: true,
+  },
 };
 
 module.exports = {

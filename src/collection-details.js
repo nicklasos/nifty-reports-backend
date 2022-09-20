@@ -48,6 +48,13 @@ const collectionDetails = {
     twitterHandle: 'IsekaiMeta',
     enabled: true,
   },
+  renga: {
+    collectionSlug: 'renga',
+    contractAddress: '0x394E3d3044fC89fCDd966D3cb35Ac0B32B0Cda91',
+    collectionSize: 10000,
+    twitterHandle: 'RENGA_inc',
+    enabled: true,
+  },
 };
 
 module.exports = {

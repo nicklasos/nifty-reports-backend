@@ -80,12 +80,10 @@ async function captureScreenshot(url, path) {
 
 async function cropImage(imagePath) {
   const image = await Jimp.read(
-    // '/Users/mykytaolkhovyk/Projects/nft/nifty/nifty-reports-backend/screenshots/everai-heroes-duo/2022-06-11/everai-heroes-duo_community-health_2022-06-11.png'
     imagePath
   );
 
   image.crop(0, 0, 466 * 2, 466 * 2).write(
-    // '/Users/mykytaolkhovyk/Projects/nft/nifty/nifty-reports-backend/screenshots/everai-heroes-duo/2022-06-11/everai-heroes-duo_community-health_2022-06-11-cropped.png'
     imagePath
   );
 }

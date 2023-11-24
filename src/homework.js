@@ -48,8 +48,7 @@ const BLUE_CHIP_COLLECTIONS = [
 ];
 
 const calculateBlueChipHolders = async () => {
-  const MORALIS_API_KEY =
-    'D72mKKMwESsyNu6iPqCHaqpmsrSb0YCQvg5GP2F1kuNwimHLyAWbKEE0XjGJdyUf';
+  const MORALIS_API_KEY = process.env.MORALIS_API_KEY;
 
   const values = await Promise.all(
     [...reducedData.keys()].map(async (address) => {

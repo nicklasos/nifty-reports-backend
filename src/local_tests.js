@@ -20,7 +20,7 @@ const axios = require('axios');
 // ]
 
 // const calculateBlueChipHolders = async () => {
-//   const MORALIS_API_KEY = 'D72mKKMwESsyNu6iPqCHaqpmsrSb0YCQvg5GP2F1kuNwimHLyAWbKEE0XjGJdyUf'
+//   const MORALIS_API_KEY = process.env.ICYTOOLS_API_KEY;
 
 //   const values = await Promise.all(
 //     addresses.map(async (address) => {
@@ -49,8 +49,7 @@ const axios = require('axios');
 const request = axios.create({
   baseURL: 'https://api.twitter.com/2/users/by/username', ///todya_?user.fields=public_metrics
   headers: {
-    Authorization:
-      'Bearer AAAAAAAAAAAAAAAAAAAAALUvdAEAAAAAL0%2FHGAFZEqfiVOW4e2hNLvF%2FBO0%3DrDdt6x4HFIRE8fk4P87E4tH2q5IqUGXrPjj6ZUXOhbdPMPhDll',
+    Authorization: 'Bearer XXX',
   },
 });
 

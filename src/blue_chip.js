@@ -11,8 +11,7 @@ const BLUE_CHIP_COLLECTIONS = [
   '0x1a92f7381b9f03921564a437210bb9396471050c', // COOLCATS
 ];
 
-const MORALIS_API_KEY =
-  'D72mKKMwESsyNu6iPqCHaqpmsrSb0YCQvg5GP2F1kuNwimHLyAWbKEE0XjGJdyUf';
+const MORALIS_API_KEY = process.env.MORALIS_API_KEY;
 
 async function calculateBlueChip() {
   let blueChipHolder = 0;

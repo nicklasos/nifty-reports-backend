@@ -53,7 +53,7 @@ async function getLastIcyToolsData(collectionSlug) {
 
 async function getIcyToolsCollectionStats(contractAddress, startDate) {
   const url = 'https://graphql.icy.tools/graphql';
-  const API_KEY = '191264f1bd0c46f39c9dbc2cef04b7a3';
+  const API_KEY = process.env.ICYTOOLS_API_KEY;
 
   if (!contractAddress) throw new Error('Please provide a contract address');
 
